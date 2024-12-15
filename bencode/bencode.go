@@ -1,15 +1,32 @@
 package bencode
 
+type Kind byte
+
 const (
-	ILLEGAL byte = iota
+	ILLEGAL Kind = iota
 	STRING
 	INTEGER
 	DICTIONARY
 	LIST
 )
 
+func (k Kind) String() string {
+	switch k {
+	case STRING:
+		return "string"
+	case INTEGER:
+		return "integer"
+	case DICTIONARY:
+		return "dictionary"
+	case LIST:
+		return "list"
+	default:
+		return "illegal"
+	}
+}
+
 type Bencode struct {
-	typ     byte
+	typ     Kind
 	integer int
 	str     string
 	list    []Bencode
@@ -48,7 +65,7 @@ func NewDictionary(pairs ...Pair) Bencode {
 	}
 }
 
-func (val Bencode) Type() byte {
+func (val Bencode) Type() Kind {
 	return val.typ
 }
 

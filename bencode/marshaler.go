@@ -17,12 +17,12 @@ func unmarshal(val reflect.Value, doc Bencode) error {
 	switch val.Kind() {
 	case reflect.Int:
 		if doc.Type() != INTEGER {
-			return fmt.Errorf("can't unmarshal '%d' bencode to integer", doc.Type())
+			return fmt.Errorf("can't unmarshal '%s' bencode to integer", doc.Type().String())
 		}
 		val.SetInt(int64(doc.Integer()))
 	case reflect.Bool:
 		if doc.Type() != INTEGER {
-			return fmt.Errorf("can't unmarshal '%d' bencode to bool", doc.Type())
+			return fmt.Errorf("can't unmarshal '%s' bencode to bool", doc.Type().String())
 		}
 		if doc.Integer() != 0 {
 			val.SetBool(true)
@@ -31,12 +31,12 @@ func unmarshal(val reflect.Value, doc Bencode) error {
 		}
 	case reflect.String:
 		if doc.Type() != STRING {
-			return fmt.Errorf("can't unmarshal '%d' bencode to string", doc.Type())
+			return fmt.Errorf("can't unmarshal '%s' bencode to string", doc.Type().String())
 		}
 		val.SetString(doc.Str())
 	case reflect.Slice:
 		if doc.Type() != LIST {
-			return fmt.Errorf("can't unmarshal '%d' bencode to slice", doc.Type())
+			return fmt.Errorf("can't unmarshal '%s' bencode to slice", doc.Type().String())
 		}
 		val.Set(reflect.MakeSlice(val.Type(), doc.Len(), doc.Len()))
 		for i := 0; i < doc.Len(); i++ {
@@ -57,7 +57,7 @@ func unmarshal(val reflect.Value, doc Bencode) error {
 			return fmt.Errorf("can't unmarshal to map: type of value should be interface{}")
 		}
 		if doc.Type() != DICTIONARY {
-			return fmt.Errorf("can't unmarshal '%d' bencode to map", doc.Type())
+			return fmt.Errorf("can't unmarshal '%s' bencode to map", doc.Type().String())
 		}
 		keys := doc.Keys()
 		for _, key := range keys {
@@ -71,7 +71,7 @@ func unmarshal(val reflect.Value, doc Bencode) error {
 	case reflect.Interface:
 		typ := val.Type()
 		if typ.NumMethod() != 0 {
-			return fmt.Errorf("can't unmarshal to %T, expect interface{}", typ.String())
+			return fmt.Errorf("can't unmarshal to %s, expect interface{}", typ.String())
 		}
 
 		switch doc.Type() {
@@ -96,11 +96,11 @@ func unmarshal(val reflect.Value, doc Bencode) error {
 			}
 			val.Set(dict.Convert(typ))
 		default:
-			return fmt.Errorf("can't unmarshal '%d' to %s", doc.Type(), typ.String())
+			return fmt.Errorf("can't unmarshal '%s' to %s", doc.Type().String(), typ.String())
 		}
 	case reflect.Struct:
 		if doc.Type() != DICTIONARY {
-			return fmt.Errorf("can't unmarshal '%d' bencode to struct", doc.Type())
+			return fmt.Errorf("can't unmarshal '%s' bencode to struct", doc.Type().String())
 		}
 		typ := val.Type()
 		for i := 0; i < val.NumField(); i++ {

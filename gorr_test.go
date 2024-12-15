@@ -16,7 +16,8 @@ func TestParseTorrent(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	var torrent map[string]any
+	// var torrent map[string]any
+	var torrent Torrent
 	err = bencode.Unmarshal(&torrent, document)
 	if err != nil {
 		t.Fatal(err)
