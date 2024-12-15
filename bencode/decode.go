@@ -83,7 +83,7 @@ func (d *Decoder) decodeList() (Bencode, error) {
 		return Bencode{}, fmt.Errorf("can't decode first byte of list: %w", err)
 	}
 	for {
-		if end, err := d.buf.Peek(1); end[0] == 'e' && err == nil {
+		if end, err := d.buf.Peek(1); err != nil || end[0] == 'e' {
 			break
 		}
 		item, err := d.Decode()
@@ -106,7 +106,7 @@ func (d *Decoder) decodeDictionary() (Bencode, error) {
 		return Bencode{}, fmt.Errorf("can't decode first byte of list: %w", err)
 	}
 	for {
-		if end, err := d.buf.Peek(1); end[0] == 'e' && err == nil {
+		if end, err := d.buf.Peek(1); err != nil || end[0] == 'e' {
 			break
 		}
 		key, err := d.decodeString()

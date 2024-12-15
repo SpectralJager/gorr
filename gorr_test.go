@@ -16,7 +16,11 @@ func TestParseTorrent(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	torrentFile := NewTorrent(document)
-	data, _ := json.MarshalIndent(torrentFile, "", "  ")
+	var torrent map[string]any
+	err = bencode.Unmarshal(&torrent, document)
+	if err != nil {
+		t.Fatal(err)
+	}
+	data, _ := json.MarshalIndent(torrent, "", "  ")
 	fmt.Println(string(data))
 }
