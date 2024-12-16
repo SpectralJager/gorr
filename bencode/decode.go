@@ -53,11 +53,11 @@ func (d *Decoder) decodeInteger() (Bencode, error) {
 
 func (d *Decoder) decodeString() (Bencode, error) {
 	val := Bencode{typ: STRING}
-	lenghtStr, err := d.buf.ReadString(':')
+	lengthStr, err := d.buf.ReadString(':')
 	if err != nil {
 		return Bencode{}, fmt.Errorf("can't read length of string: %w", err)
 	}
-	length, err := strconv.Atoi(lenghtStr[:len(lenghtStr)-1])
+	length, err := strconv.Atoi(lengthStr[:len(lengthStr)-1])
 	if err != nil {
 		return Bencode{}, fmt.Errorf("can't decode strings's length: %w", err)
 	}
