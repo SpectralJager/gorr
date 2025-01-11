@@ -11,14 +11,32 @@ import (
 )
 
 func TestGorr(t *testing.T) {
+	// open torrent file
 	torrent, err := Open("test/debian.torrent")
 	if err != nil {
 		t.Fatal(err)
 	}
-	peers, err := GetPeers(torrent)
+	// get torrent peers
+	peers, err := getPeers(torrent)
 	if err != nil {
 		t.Fatal(err)
 	}
+	// download pieces of torrent
+	file, err := os.OpenFile("test/"+torrent.Info.Path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
+	if err != nil {
+		t.Fatal(err)
+	}
+	handshake := bytes.Buffer{}
+	handshake.WriteByte(19)
+	handshake.WriteString("BitTorrent protocol")
+	handshake.Write([]byte{0, 0, 0, 0, 0, 0, 0, 0})
+	handshake.Write(torrent.Info.Hash[:])
+	handshake.WriteString(PeerID)
+	for _, peer := range peers {
+		_ = peer
+	}
+	_ = file
+
 	data, _ := json.MarshalIndent(peers, "", "  ")
 	fmt.Println(string(data))
 }

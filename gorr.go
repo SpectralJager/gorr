@@ -5,7 +5,6 @@ import (
 	"crypto/sha1"
 	"encoding/binary"
 	"fmt"
-	"math/rand/v2"
 	"net"
 	"net/http"
 	"net/url"
@@ -14,6 +13,8 @@ import (
 
 	"github.com/SpectralJager/gorr/bencode"
 )
+
+const PeerID = "-GR0001-000000000000"
 
 type Torrent struct {
 	Announce     string     `ben:"announce"`
@@ -62,7 +63,7 @@ type Peer struct {
 	Port uint16
 }
 
-func GetPeers(torrent Torrent) ([]Peer, error) {
+func getPeers(torrent Torrent) ([]Peer, error) {
 	req, err := buildRequest(torrent)
 	if err != nil {
 		return []Peer{}, nil
@@ -75,13 +76,9 @@ func GetPeers(torrent Torrent) ([]Peer, error) {
 }
 
 func buildRequest(torrent Torrent) (*http.Request, error) {
-	peerId := []byte{}
-	for len(peerId) < 12 {
-		peerId = append(peerId, byte(rand.N(10)))
-	}
 	params := url.Values{
 		"info_hash":  []string{string(torrent.Info.Hash[:])},
-		"peer_id":    []string{fmt.Sprintf("-GR0001-%s", string(peerId))},
+		"peer_id":    []string{PeerID},
 		"uploaded":   []string{strconv.Itoa(0)},
 		"downloaded": []string{strconv.Itoa(0)},
 		"left":       []string{strconv.Itoa(torrent.Info.Length)},
